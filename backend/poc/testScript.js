@@ -1,4 +1,6 @@
 
+// this script is just for POC
+
 const { readFileSync } = require('fs');
 const { homedir } = require('os');
 const { join } = require('path');

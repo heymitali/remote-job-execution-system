@@ -2,18 +2,20 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon script.js",
-    "dev": "nodemon script.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
-    "ssh2": "^1.16.0"
+    "ssh2": "^1.16.0",
+    "uuid": "^11.1.0"
   },
   "keywords": []
 }

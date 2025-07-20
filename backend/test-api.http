@@ -1,0 +1,58 @@
+### Health Check
+GET http://localhost:3000/health
+
+### Execute Command - Simple command
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "pwd"
+}
+
+### Execute Command - List files
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "ls -la"
+}
+
+### Execute Command - Check current user
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "whoami"
+}
+
+### Execute Command - Long running command (for testing cancellation)
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "sleep 30 && echo 'Done sleeping'"
+}
+
+### Cancel Command
+POST http://localhost:3000/api/commands/cancel
+Content-Type: application/json
+
+{
+  "job_id": "290631e1-247b-4ed2-9464-b1d9ad5048e8"
+}
+
+### Execute Command - System info
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "uname -a"
+}
+
+### Execute Command - Check disk space
+POST http://localhost:3000/api/commands/execute
+Content-Type: application/json
+
+{
+  "command": "df -h"
+}
