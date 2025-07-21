@@ -1,0 +1,54 @@
+### Test API Endpoints for Job Management
+
+### Health Check
+GET http://localhost:3000/health
+
+### Execute Command (Creates Job Entry)
+POST http://localhost:3000/api/execute
+Content-Type: application/json
+
+{
+  "command": "ls -la /tmp"
+}
+
+### Execute Another Command
+POST http://localhost:3000/api/execute
+Content-Type: application/json
+
+{
+  "command": "echo 'Hello World from remote server'"
+}
+
+### Execute Long Running Command
+POST http://localhost:3000/api/execute
+Content-Type: application/json
+
+{
+  "command": "sleep 10 && echo 'Completed after 10 seconds'"
+}
+
+### Get All Jobs
+GET http://localhost:3000/api/jobs
+
+### Get Jobs with Pagination
+GET http://localhost:3000/api/jobs?limit=10&offset=0
+
+### Get Jobs by Status
+GET http://localhost:3000/api/jobs?status=completed
+
+### Get Job by ID (Replace with actual job ID)
+GET http://localhost:3000/api/jobs/YOUR_JOB_ID_HERE
+
+### Get Job Statistics
+GET http://localhost:3000/api/jobs-stats
+
+### Cancel Command (Replace with actual job ID)
+POST http://localhost:3000/api/cancel
+Content-Type: application/json
+
+{
+  "jobId": "YOUR_JOB_ID_HERE"
+}
+
+### Delete Job (Replace with actual job ID)
+DELETE http://localhost:3000/api/jobs/YOUR_JOB_ID_HERE

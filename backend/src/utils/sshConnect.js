@@ -2,6 +2,7 @@ const { readFileSync } = require('fs');
 const { homedir } = require('os');
 const { join } = require('path');
 const { Client } = require('ssh2');
+const Job = require('../models/Job');
 
 // Store single connection and stream
 let connection = null;
@@ -47,51 +48,95 @@ const createConnection = async () => {
 };
 
 const executeCommand = async (job_id, command) => {
-  // Ensure connection exists
-  if (!connection) {
-    await createConnection();
-  }
+  try {
+    // Update job status to running
+    await Job.updateStatus(job_id, 'running');
+    
+    // Ensure connection exists
+    if (!connection) {
+      await createConnection();
+    }
 
-  return new Promise((resolve, reject) => {
-    connection.exec(command, (err, stream) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+    return new Promise((resolve, reject) => {
+      connection.exec(command, async (err, stream) => {
+        if (err) {
+          // Update job status to failed with error
+          await Job.updateStatus(job_id, 'failed', {
+            error_message: err.message
+          });
+          reject(err);
+          return;
+        }
 
-      let stdout = '';
-      let stderr = '';
+        let stdout = '';
+        let stderr = '';
 
-      stream.on('close', (code, signal) => {
-        console.log(`Command execution completed :: code: ${code}, signal: ${signal}`);
-        activeStream = null;
-        resolve({
-          code,
-          signal,
-          stdout: stdout.trim(),
-          stderr: stderr.trim()
+        stream.on('close', async (code, signal) => {
+          console.log(`Command execution completed :: code: ${code}, signal: ${signal}`);
+          activeStreams.delete(job_id);
+          
+          // Determine status based on exit code
+          const status = code === 0 ? 'completed' : 'failed';
+          
+          // Update job with results
+          await Job.updateStatus(job_id, status, {
+            output_stdout: stdout.trim(),
+            output_stderr: stderr.trim(),
+            exit_code: code,
+            signal_code: signal
+          });
+          
+          resolve({
+            code,
+            signal,
+            stdout: stdout.trim(),
+            stderr: stderr.trim()
+          });
         });
-      });
 
-      stream.on('data', (data) => {
-        stdout += data.toString();
-      });
+        stream.on('data', (data) => {
+          stdout += data.toString();
+        });
 
-      stream.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
+        stream.stderr.on('data', (data) => {
+          stderr += data.toString();
+        });
 
-      // Store stream reference for potential cancellation
-      activeStreams.set(job_id, stream);
+        stream.on('error', async (error) => {
+          console.error('Stream error:', error);
+          activeStreams.delete(job_id);
+          
+          // Update job status to failed
+          await Job.updateStatus(job_id, 'failed', {
+            error_message: error.message,
+            output_stderr: stderr.trim()
+          });
+          
+          reject(error);
+        });
+
+        // Store stream reference for potential cancellation
+        activeStreams.set(job_id, stream);
+      });
     });
-  });
+  } catch (error) {
+    // Update job status to failed if any error occurs
+    await Job.updateStatus(job_id, 'failed', {
+      error_message: error.message
+    });
+    throw error;
+  }
 };
 
-const cancelCommand = (job_id) => {
+const cancelCommand = async (job_id) => {
   const stream = activeStreams.get(job_id);
   if (stream) {
     stream.signal('KILL');
     activeStreams.delete(job_id);
+    
+    // Update job status to cancelled
+    await Job.updateStatus(job_id, 'cancelled');
+    
     return true;
   }
   
