@@ -2,6 +2,10 @@
 
 A full-stack web application for executing commands and scripts on remote servers. The system provides a modern React frontend for job management and a Node.js/Express backend for secure remote execution with database persistence.
 
+## Screenshot
+
+![Homepage](frontend/docs/homepage.png)
+
 ## 🚀 Features
 
 ### Frontend (React + Vite)
@@ -9,7 +13,6 @@ A full-stack web application for executing commands and scripts on remote server
 - **Script Execution**: Run multi-line scripts with preset templates
 - **Real-time Job Monitoring**: Track job status and view outputs in real-time
 - **Job History**: Complete history of executed jobs with filtering and search
-- **Connection Management**: Monitor SSH connection status
 - **Modern UI**: Clean, responsive interface built with Tailwind CSS
 - **Error Handling**: Comprehensive error display and management
 
@@ -21,10 +24,6 @@ A full-stack web application for executing commands and scripts on remote server
 - **Async Processing**: Non-blocking command execution
 - **Job Cancellation**: Cancel running jobs
 - **Health Monitoring**: System health checks and status endpoints
-
-## Screenshot
-
-![Homepage](frontend/docs/homepage.png)
 
 ## 🏗️ Architecture
 
@@ -73,20 +72,6 @@ mysql -u root -p < database/setup.sql
 # Create environment file
 cp .env.example .env
 # Edit .env with your configuration
-```
-
-**Environment Variables** (`.env`):
-```env
-PORT=3000
-DB_HOST=localhost
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=remote_job_execution
-SSH_HOST=your_remote_server_ip
-SSH_PORT=22
-SSH_USERNAME=your_ssh_username
-SSH_PASSWORD=your_ssh_password
-# OR use SSH_PRIVATE_KEY_PATH for key-based auth
 ```
 
 ```bash
