@@ -82,8 +82,8 @@ const executeCommand = async (job_id, command) => {
           await Job.updateStatus(job_id, status, {
             output_stdout: stdout.trim(),
             output_stderr: stderr.trim(),
-            exit_code: code,
-            signal_code: signal
+            exit_code: code || -1,
+            signal_code: signal || -1
           });
           
           resolve({
