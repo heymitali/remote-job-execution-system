@@ -22,6 +22,10 @@ A full-stack web application for executing commands and scripts on remote server
 - **Job Cancellation**: Cancel running jobs
 - **Health Monitoring**: System health checks and status endpoints
 
+## Screenshot
+
+![Homepage](frontend/docs/homepage.png)
+
 ## 🏗️ Architecture
 
 ```
