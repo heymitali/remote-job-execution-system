@@ -28,15 +28,16 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+app.use('/', (req, res, next) => {
+  res.json({ status: 'OK', message: 'Server is running finally!!!' });
+});
+
 // Error handling middleware
 app.use(errorHandler);
 
 // Initialize database and start server
 const startServer = async () => {
   try {
-    // Initialize database connection and create tables
-    await initializeDatabase();
-    
     // Start server
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

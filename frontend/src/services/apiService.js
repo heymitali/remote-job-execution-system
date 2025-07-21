@@ -1,11 +1,11 @@
 // API service for remote job execution
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 class ApiService {
   // Execute a command
   static async executeCommand(command) {
     try {
-      const response = await fetch(`${API_BASE_URL}/commands/execute`, {
+      const response = await fetch(`${API_BASE_URL}/api/commands/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ class ApiService {
   // Cancel a command
   static async cancelCommand(jobId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/commands/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/api/commands/cancel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ class ApiService {
   // Health check
   static async healthCheck() {
     try {
-      const response = await fetch(`http://localhost:3000/health`);
+      const response = await fetch(`${API_BASE_URL}/health`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -69,7 +69,7 @@ class ApiService {
   // Get all jobs with pagination and filtering
   static async getJobs(limit = 50, offset = 0, status = null) {
     try {
-      let url = `${API_BASE_URL}/jobs?limit=${limit}&offset=${offset}`;
+      let url = `${API_BASE_URL}/api/jobs?limit=${limit}&offset=${offset}`;
       if (status) {
         url += `&status=${status}`;
       }
@@ -90,7 +90,7 @@ class ApiService {
   // Get single job
   static async getJob(jobId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`);
+      const response = await fetch(`${API_BASE_URL}/api/jobs/${jobId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -106,7 +106,7 @@ class ApiService {
   // Get job statistics
   static async getJobStats() {
     try {
-      const response = await fetch(`${API_BASE_URL}/jobs/stats`);
+      const response = await fetch(`${API_BASE_URL}/api/jobs/stats`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -122,7 +122,7 @@ class ApiService {
   // Delete a job
   static async deleteJob(jobId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/jobs/${jobId}`, {
         method: 'DELETE',
       });
 

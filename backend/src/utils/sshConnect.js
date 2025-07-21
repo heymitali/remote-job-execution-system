@@ -21,7 +21,9 @@ const createConnection = async () => {
     host: process.env.SSH_HOST,
     port: process.env.SSH_PORT,
     username: process.env.SSH_USERNAME,
-    privateKey: readFileSync(join(homedir(), '.ssh', process.env.SSH_PRIVATE_KEY_FILE))
+    privateKey: process.env.SSH_PRIVATE_KEY_CONTENT 
+      ? process.env.SSH_PRIVATE_KEY_CONTENT.replace(/\\n/g, '\n')
+      : readFileSync(join(homedir(), '.ssh', process.env.SSH_PRIVATE_KEY_FILE))
   };
 
   return new Promise((resolve, reject) => {
