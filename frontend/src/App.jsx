@@ -24,18 +24,35 @@ function App() {
   const [activeTab, setActiveTab] = useState('command');
   const [isHealthy, setIsHealthy] = useState(false);
 
+
+  // Polling every 5 seconds for health and jobs
   useEffect(() => {
-    healthCheck()
-      .then(result => {
-        setIsHealthy(result.status === 'OK' ? true : false);
-      })
-      .catch(err => {
+    const fetchData = async () => {
+      try {
+        const health = await healthCheck();
+        setIsHealthy(health.status === 'OK');
+      } catch (err) {
         console.error('Health check failed:', err);
         setIsHealthy(false);
-      });
+      }
 
-    console.log('Health status:', isHealthy);
-  }, [isHealthy]);
+      try {
+        // Replace with your actual API call to fetch jobs
+        const response = await fetch('/api/jobs');
+        if (response.ok) {
+          const jobsData = await response.json();
+          setJobs(jobsData);
+        }
+      } catch (err) {
+        console.error('Failed to fetch jobs:', err);
+        // Optionally handle job fetch error
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, [healthCheck]);
 
   // Handle command execution
   const handleExecuteCommand = async (command) => {

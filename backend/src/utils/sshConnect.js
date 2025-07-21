@@ -76,7 +76,10 @@ const executeCommand = async (job_id, command) => {
           activeStreams.delete(job_id);
           
           // Determine status based on exit code
-          const status = code === 0 ? 'completed' : 'failed';
+          let status = code === 0 ? 'completed' : 'failed';
+          if (signal == 'SIGKILL') {
+            status = 'cancelled';
+          }
           
           // Update job with results
           await Job.updateStatus(job_id, status, {

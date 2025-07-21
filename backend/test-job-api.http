@@ -4,7 +4,7 @@
 GET http://localhost:3000/health
 
 ### Execute Command (Creates Job Entry)
-POST http://localhost:3000/api/execute
+POST http://localhost:3000/api/commands/execute
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### Execute Another Command
-POST http://localhost:3000/api/execute
+POST http://localhost:3000/api/commands/execute
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Execute Long Running Command
-POST http://localhost:3000/api/execute
+POST http://localhost:3000/api/commands/execute
 Content-Type: application/json
 
 {
@@ -31,24 +31,24 @@ Content-Type: application/json
 GET http://localhost:3000/api/jobs
 
 ### Get Jobs with Pagination
-GET http://localhost:3000/api/jobs?limit=10&offset=0
+GET http://localhost:3000/api/jobs?limit=2&offset=0
 
 ### Get Jobs by Status
-GET http://localhost:3000/api/jobs?status=completed
+GET http://localhost:3000/api/jobs?status=failed
 
 ### Get Job by ID (Replace with actual job ID)
-GET http://localhost:3000/api/jobs/YOUR_JOB_ID_HERE
+GET http://localhost:3000/api/jobs/bf1567ee-75b6-451b-bdca-80dd47e6a2b5
 
 ### Get Job Statistics
-GET http://localhost:3000/api/jobs-stats
+GET http://localhost:3000/api/jobs/stats
 
 ### Cancel Command (Replace with actual job ID)
-POST http://localhost:3000/api/cancel
+POST http://localhost:3000/api/commands/cancel
 Content-Type: application/json
 
 {
-  "jobId": "YOUR_JOB_ID_HERE"
+  "jobId": "fa39a33e-dc23-46ac-ac80-43fc96c002b1"
 }
 
 ### Delete Job (Replace with actual job ID)
-DELETE http://localhost:3000/api/jobs/YOUR_JOB_ID_HERE
+DELETE http://localhost:3000/api/jobs/e50e5501-daf0-4535-bf61-88bb76d7bf99
