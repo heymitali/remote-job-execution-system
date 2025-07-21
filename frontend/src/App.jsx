@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useApi from './hooks/useApi';
 import {
   CommandForm,
@@ -6,9 +6,10 @@ import {
   JobHistory,
   ConnectionStatus,
   ErrorAlert,
-  LoadingSpinner
+  LoadingSpinner,
+  JobDetailsModal,
+  JobFilters
 } from './components';
-import { useEffect } from 'react';
 
 function App() {
   const {
@@ -17,15 +18,93 @@ function App() {
     healthCheck,
     executeCommand,
     cancelCommand,
+    getJobs,
+    getJobStats,
+    deleteJob,
     clearError,
   } = useApi();
 
   const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [jobStats, setJobStats] = useState(null);
   const [activeTab, setActiveTab] = useState('command');
   const [isHealthy, setIsHealthy] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [filters, setFilters] = useState({
+    status: '',
+    searchTerm: ''
+  });
+  const [pagination, setPagination] = useState({
+    limit: 50,
+    offset: 0,
+    hasMore: true
+  });
 
+  // Filter jobs based on status and search term
+  useEffect(() => {
+    let filtered = jobs;
 
-  // Polling every 5 seconds for health and jobs
+    // Filter by status
+    if (filters.status) {
+      filtered = filtered.filter(job => job.status === filters.status);
+    }
+
+    // Filter by search term
+    if (filters.searchTerm) {
+      const searchLower = filters.searchTerm.toLowerCase();
+      filtered = filtered.filter(job =>
+        job.command.toLowerCase().includes(searchLower) ||
+        job.id.toLowerCase().includes(searchLower)
+      );
+    }
+
+    setFilteredJobs(filtered);
+  }, [jobs, filters]);
+  // 
+
+  // Handle filter change
+  const handleFilterChange = (status) => {
+    setFilters(prev => ({ ...prev, status }));
+  };
+
+  // Handle search change
+  const handleSearchChange = (searchTerm) => {
+    setFilters(prev => ({ ...prev, searchTerm }));
+  };
+
+  // Fetch jobs from the API
+  const fetchJobs = useCallback(async (limit = 50, offset = 0, status = null) => {
+    try {
+      const response = await getJobs(limit, offset, status);
+      if (response.success) {
+        if (offset === 0) {
+          setJobs(response.jobs);
+        } else {
+          setJobs(prev => [...prev, ...response.jobs]);
+        }
+        setPagination(prev => ({
+          ...prev,
+          hasMore: response.jobs.length === limit
+        }));
+      }
+    } catch (err) {
+      console.error('Failed to fetch jobs:', err);
+    }
+  }, [getJobs]);
+
+  // Fetch job statistics
+  const fetchJobStats = useCallback(async () => {
+    try {
+      const response = await getJobStats();
+      if (response.success) {
+        setJobStats(response.stats);
+      }
+    } catch (err) {
+      console.error('Failed to fetch job stats:', err);
+    }
+  }, [getJobStats]);
+
+  // Polling every 5 seconds for health, jobs, and stats
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,73 +115,89 @@ function App() {
         setIsHealthy(false);
       }
 
-      try {
-        // Replace with your actual API call to fetch jobs
-        const response = await fetch('/api/jobs');
-        if (response.ok) {
-          const jobsData = await response.json();
-          setJobs(jobsData);
-        }
-      } catch (err) {
-        console.error('Failed to fetch jobs:', err);
-        // Optionally handle job fetch error
-      }
+      // Fetch jobs and stats
+      await fetchJobs();
+      await fetchJobStats();
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
-  }, [healthCheck]);
+  }, []);
+
 
   // Handle command execution
   const handleExecuteCommand = async (command) => {
-    const newJob = {
-      command
-    };
-
-    setJobs(prev => [newJob, ...prev]);
-
     try {
       const result = await executeCommand(command);
-
-      setJobs(prev => prev.map(job =>
-        job.id === result.jobId
-          ? { ...job, status: 'completed', result: result.result }
-          : job
-      ));
+      if (result.success) {
+        await fetchJobs();
+        return result;
+      }
     } catch (e) {
-      setJobs(prev => {
-        const latestJob = prev[0];
-        return [{ ...latestJob, status: 'failed', error: e.message }, ...prev.slice(1)];
-      });
-
       console.error('Failed to execute command:', e);
+      throw e;
     }
   };
 
   // Handle script execution
   const handleExecuteScript = async (script) => {
     // For scripts, we can execute them as a single command
-    await handleExecuteCommand(script);
+    return await handleExecuteCommand(script);
   };
 
   // Handle job cancellation
   const handleCancelJob = async (jobId) => {
     try {
-      await cancelCommand(jobId);
-      setJobs(prev => prev.map(job =>
-        job.id === jobId
-          ? { ...job, status: 'cancelled' }
-          : job
-      ));
+      const result = await cancelCommand(jobId);
+      if (result.success) {
+        await fetchJobs();
+      }
+      return result;
     } catch (err) {
       console.error('Failed to cancel job:', err);
+      throw err;
     }
   };
 
-  // Clear job history
+  // Handle job deletion
+  const handleDeleteJob = async (jobId) => {
+    try {
+      const result = await deleteJob(jobId);
+      if (result.success) {
+        // Remove job from local state
+        setJobs(prev => prev.filter(job => job.id !== jobId));
+        // Refresh stats
+        await fetchJobStats();
+      }
+      return result;
+    } catch (err) {
+      console.error('Failed to delete job:', err);
+      throw err;
+    }
+  };
+
+  // Load more jobs (pagination)
+  const handleLoadMore = async () => {
+    const newOffset = pagination.offset + pagination.limit;
+    setPagination(prev => ({ ...prev, offset: newOffset }));
+    await fetchJobs(pagination.limit, newOffset);
+  };
+
+  // Clear job history (only clears local state, doesn't delete from server)
   const handleClearHistory = () => {
     setJobs([]);
+    setPagination(prev => ({ ...prev, offset: 0 }));
+  };
+
+  // Handle viewing job details
+  const handleViewJobDetails = (jobId) => {
+    setSelectedJobId(jobId);
+  };
+
+  // Close job details modal
+  const handleCloseJobDetails = () => {
+    setSelectedJobId(null);
   };
 
   // Handle health check
@@ -110,7 +205,6 @@ function App() {
     try {
       const result = await healthCheck();
       alert(`Server Status: ${result.status} - ${result.message}`);
-
     } catch (err) {
       alert(`Health Check Failed: ${err.message}`);
     }
@@ -182,11 +276,21 @@ function App() {
               </div>
             </div>
 
+            {/* Job Filters */}
+            <JobFilters
+              onFilterChange={handleFilterChange}
+              onSearchChange={handleSearchChange}
+            />
+
             {/* Job History */}
             <JobHistory
-              jobs={jobs}
+              jobs={filteredJobs}
               onCancelJob={handleCancelJob}
+              onDeleteJob={handleDeleteJob}
               onClearHistory={handleClearHistory}
+              onLoadMore={pagination.hasMore ? handleLoadMore : null}
+              onViewDetails={handleViewJobDetails}
+              loading={loading}
             />
           </div>
 
@@ -203,24 +307,36 @@ function App() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Jobs:</span>
-                  <span className="font-medium">{jobs.length}</span>
+                  <span className="font-medium">{jobStats?.total ?? jobs.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Pending:</span>
+                  <span className="font-medium text-blue-600">
+                    {jobStats?.pending ?? jobs.filter(job => job.status === 'pending').length}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Running:</span>
                   <span className="font-medium text-yellow-600">
-                    {jobs.filter(job => job.status === 'running').length}
+                    {jobStats?.running ?? jobs.filter(job => job.status === 'running').length}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Completed:</span>
                   <span className="font-medium text-green-600">
-                    {jobs.filter(job => job.status === 'completed').length}
+                    {jobStats?.completed ?? jobs.filter(job => job.status === 'completed').length}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Failed:</span>
                   <span className="font-medium text-red-600">
-                    {jobs.filter(job => job.status === 'failed').length}
+                    {jobStats?.failed ?? jobs.filter(job => job.status === 'failed').length}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Cancelled:</span>
+                  <span className="font-medium text-red-600">
+                    {jobStats?.cancelled ?? jobs.filter(job => job.status === 'cancelled').length}
                   </span>
                 </div>
               </div>
@@ -228,6 +344,14 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Job Details Modal */}
+      {selectedJobId && (
+        <JobDetailsModal
+          jobId={selectedJobId}
+          onClose={handleCloseJobDetails}
+        />
+      )}
     </div>
   );
 }

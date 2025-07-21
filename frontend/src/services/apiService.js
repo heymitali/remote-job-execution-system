@@ -35,7 +35,7 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          job_id: jobId,
+          jobId: jobId,
         }),
       });
 
@@ -66,10 +66,10 @@ class ApiService {
     }
   }
 
-  // Get all jobs
-  static async getJobs(page = 1, limit = 10, status = null) {
+  // Get all jobs with pagination and filtering
+  static async getJobs(limit = 50, offset = 0, status = null) {
     try {
-      let url = `${API_BASE_URL}/commands/jobs?page=${page}&limit=${limit}`;
+      let url = `${API_BASE_URL}/jobs?limit=${limit}&offset=${offset}`;
       if (status) {
         url += `&status=${status}`;
       }
@@ -90,7 +90,7 @@ class ApiService {
   // Get single job
   static async getJob(jobId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/commands/jobs/${jobId}`);
+      const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -106,7 +106,7 @@ class ApiService {
   // Get job statistics
   static async getJobStats() {
     try {
-      const response = await fetch(`${API_BASE_URL}/commands/jobs-stats`);
+      const response = await fetch(`${API_BASE_URL}/jobs/stats`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -122,7 +122,7 @@ class ApiService {
   // Delete a job
   static async deleteJob(jobId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/commands/jobs/${jobId}`, {
+      const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
         method: 'DELETE',
       });
 

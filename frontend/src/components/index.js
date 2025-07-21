@@ -5,3 +5,5 @@ export { default as JobHistory } from './JobHistory';
 export { default as ConnectionStatus } from './HealthStatus';
 export { default as ErrorAlert } from './ErrorAlert';
 export { default as LoadingSpinner } from './LoadingSpinner';
+export { default as JobDetailsModal } from './JobDetailsModal';
+export { default as JobFilters } from './JobFilters';

@@ -35,6 +35,66 @@ const useApi = () => {
     }
   };
 
+  // Get all jobs
+  const getJobs = async (limit = 50, offset = 0, status = null) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await ApiService.getJobs(limit, offset, status);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get single job
+  const getJob = async (jobId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await ApiService.getJob(jobId);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get job statistics
+  const getJobStats = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await ApiService.getJobStats();
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete job
+  const deleteJob = async (jobId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await ApiService.deleteJob(jobId);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Health check
   const healthCheck = async () => {
     try {
@@ -56,6 +116,10 @@ const useApi = () => {
     error,
     executeCommand,
     cancelCommand,
+    getJobs,
+    getJob,
+    getJobStats,
+    deleteJob,
     healthCheck,
     clearError,
   };
