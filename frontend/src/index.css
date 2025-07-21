@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* Custom responsive utilities */
+@media (max-width: 640px) {
+  .custom-responsive {
+    /* Ensure text doesn't get too small on mobile */
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  /* Better spacing for mobile */
+  .mobile-padding {
+    padding: 0.75rem;
+  }
+  
+  /* Prevent horizontal overflow */
+  .prevent-overflow {
+    overflow-x: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* Ensure good touch targets on mobile */
+@media (max-width: 768px) {
+  button, 
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Better scrollbars for small screens */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

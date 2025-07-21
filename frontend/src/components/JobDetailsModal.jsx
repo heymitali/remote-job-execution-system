@@ -47,11 +47,11 @@ const JobDetailsModal = ({ jobId, onClose }) => {
     if (!jobId) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
                 {/* Header */}
-                <div className="flex justify-between items-center p-6 border-b">
-                    <h2 className="text-xl font-semibold text-gray-800">Job Details</h2>
+                <div className="flex justify-between items-center p-4 sm:p-6 border-b">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Job Details</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-gray-600 text-xl font-bold"
@@ -61,7 +61,7 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-120px)] custom-scrollbar">
                     {loading && (
                         <div className="text-center py-8">
                             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -78,10 +78,10 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                     {job && !loading && (
                         <div className="space-y-6">
                             {/* Basic Info */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Job ID</label>
-                                    <div className="text-sm text-gray-900 font-mono">{job.id}</div>
+                                    <div className="text-sm text-gray-900 font-mono break-all">{job.id}</div>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -103,7 +103,7 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Command</label>
                                 <div className="bg-gray-50 border rounded-md p-3">
-                                    <code className="text-sm text-gray-900">{job.command}</code>
+                                    <code className="text-sm text-gray-900 break-all">{job.command}</code>
                                 </div>
                             </div>
 
@@ -111,7 +111,7 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                             {job.output_stdout && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Standard Output</label>
-                                    <div className="bg-gray-50 border rounded-md p-3 max-h-64 overflow-y-auto">
+                                    <div className="bg-gray-50 border rounded-md p-3 max-h-64 overflow-y-auto overflow-x-auto custom-scrollbar">
                                         <pre className="text-sm text-gray-900 whitespace-pre-wrap">{job.output_stdout}</pre>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                             {job.output_stderr && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Error Output</label>
-                                    <div className="bg-red-50 border border-red-200 rounded-md p-3 max-h-64 overflow-y-auto">
+                                    <div className="bg-red-50 border border-red-200 rounded-md p-3 max-h-64 overflow-y-auto overflow-x-auto custom-scrollbar">
                                         <pre className="text-sm text-red-700 whitespace-pre-wrap">{job.output_stderr}</pre>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@ const JobDetailsModal = ({ jobId, onClose }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-end p-6 border-t bg-gray-50">
+                <div className="flex justify-end p-4 sm:p-6 border-t bg-gray-50">
                     <button
                         onClick={onClose}
                         className="px-4 py-2 text-sm bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"

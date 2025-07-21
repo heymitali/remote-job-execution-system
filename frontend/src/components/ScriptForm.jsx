@@ -40,19 +40,19 @@ const ScriptForm = ({ onExecuteScript, loading }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Execute Script</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Execute Script</h2>
 
             {/* Preset Scripts */}
             <div className="mb-4">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Quick Scripts:</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                     {commonScripts.map((preset, index) => (
                         <button
                             key={index}
                             type="button"
                             onClick={() => handlePresetClick(preset.script)}
-                            className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-300"
+                            className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-300 truncate"
                         >
                             {preset.name}
                         </button>

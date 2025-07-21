@@ -10,8 +10,8 @@ const ConnectionStatus = ({ status, onHealthCheck }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Connection Status</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Connection Status</h2>
 
             <div className="space-y-4">
                 <div className="flex items-center justify-between">

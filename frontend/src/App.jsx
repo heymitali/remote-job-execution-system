@@ -209,8 +209,8 @@ function App() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               Remote Job Execution System
             </h1>
             <div className="text-sm text-gray-500">
@@ -227,16 +227,16 @@ function App() {
         {/* Loading Spinner */}
         {loading && <LoadingSpinner message="Processing request..." />}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Column - Forms */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-6">
             {/* Tab Navigation */}
             <div className="bg-white rounded-lg shadow-md">
               <div className="border-b border-gray-200">
-                <nav className="-mb-px flex">
+                <nav className="-mb-px flex overflow-x-auto">
                   <button
                     onClick={() => setActiveTab('command')}
-                    className={`py-3 px-6 border-b-2 font-medium text-sm ${activeTab === 'command'
+                    className={`py-3 px-4 sm:px-6 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'command'
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
@@ -245,7 +245,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => setActiveTab('script')}
-                    className={`py-3 px-6 border-b-2 font-medium text-sm ${activeTab === 'script'
+                    className={`py-3 px-4 sm:px-6 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'script'
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
@@ -255,7 +255,7 @@ function App() {
                 </nav>
               </div>
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {activeTab === 'command' ? (
                   <CommandForm
                     onExecuteCommand={handleExecuteCommand}
@@ -295,7 +295,7 @@ function App() {
             />
 
             {/* Quick Stats */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
               <h3 className="text-lg font-semibold mb-3 text-gray-800">Quick Stats</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">

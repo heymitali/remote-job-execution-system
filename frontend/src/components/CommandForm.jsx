@@ -11,8 +11,8 @@ const CommandForm = ({ onExecuteCommand, loading }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Execute Command</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-800">Execute Command</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label htmlFor="command" className="block text-sm font-medium text-gray-700 mb-2">

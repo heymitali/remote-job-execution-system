@@ -32,33 +32,33 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onLoadMore, onViewDetails,
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Job History</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Job History</h2>
             </div>
 
             {jobs.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">No jobs executed yet</p>
             ) : (
                 <>
-                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                    <div className="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
                         {jobs.map((job) => (
-                            <div key={job.id} className="border border-gray-200 rounded-lg p-4">
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-medium text-gray-600 text-sm">
+                            <div key={job.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 prevent-overflow">
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                                            <span className="font-medium text-gray-600 text-sm break-all">
                                                 <span className="font-semibold text-black">Job Id: </span>
                                                 {job.id}
                                             </span>
-                                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(job.status)}`}>
+                                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(job.status)} inline-block`}>
                                                 {job.status}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-600 font-mono bg-gray-50 p-2 rounded">
+                                        <p className="text-sm text-gray-600 font-mono bg-gray-50 p-2 rounded break-all">
                                             {job.command}
                                         </p>
-                                        <div className="flex justify-between items-center mt-1">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-1 gap-1">
                                             <p className="text-xs text-gray-500">
                                                 Started: {formatTimestamp(job.started_at)}
                                             </p>
@@ -70,24 +70,24 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onLoadMore, onViewDetails,
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-2 ml-2">
+                                    <div className="flex flex-col sm:flex-row gap-2 sm:ml-2 w-full sm:w-auto">
                                         <button
                                             onClick={() => onViewDetails(job.id)}
-                                            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 touch-target"
                                         >
                                             View Details
                                         </button>
                                         {job.status === 'running' && (
                                             <button
                                                 onClick={() => onCancelJob(job.id)}
-                                                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 touch-target"
                                             >
                                                 Cancel
                                             </button>
                                         )}
                                         <button
                                             onClick={() => handleDeleteJob(job.id)}
-                                            className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                            className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 touch-target"
                                         >
                                             Delete
                                         </button>
@@ -97,7 +97,7 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onLoadMore, onViewDetails,
                                 {job.output_stdout && (
                                     <div className="mt-3 p-3 bg-gray-50 rounded-md">
                                         <div className="text-xs text-gray-600 mb-1">Output:</div>
-                                        <pre className="text-sm text-gray-800 whitespace-pre-wrap mb-2 max-h-32 overflow-y-auto">
+                                        <pre className="text-sm text-gray-800 whitespace-pre-wrap mb-2 max-h-32 overflow-y-auto overflow-x-auto custom-scrollbar">
                                             {job.output_stdout}
                                         </pre>
                                     </div>
@@ -106,7 +106,7 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onLoadMore, onViewDetails,
                                 {job.output_stderr && (
                                     <div className="mt-3 p-3 bg-red-50 rounded-md">
                                         <div className="text-xs text-red-600 mb-1">Error Output:</div>
-                                        <pre className="text-sm text-red-600 whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                        <pre className="text-sm text-red-600 whitespace-pre-wrap max-h-32 overflow-y-auto overflow-x-auto custom-scrollbar">
                                             {job.output_stderr}
                                         </pre>
                                     </div>
