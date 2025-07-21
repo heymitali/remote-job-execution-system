@@ -65,11 +65,9 @@ class Job {
     }
     query += ` ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`;
     try {
-      console.log('Executing query:', query, 'with params:', params);
       const connection = await pool.getConnection();
       const [rows] = await connection.execute(query, params);
       connection.release();
-      console.log('Query result:', rows);
       return rows.map(row => new Job(row));
     } catch (error) {
       console.error('Error finding all jobs:', error);
