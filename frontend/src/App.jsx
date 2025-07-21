@@ -184,12 +184,6 @@ function App() {
     await fetchJobs(pagination.limit, newOffset);
   };
 
-  // Clear job history (only clears local state, doesn't delete from server)
-  const handleClearHistory = () => {
-    setJobs([]);
-    setPagination(prev => ({ ...prev, offset: 0 }));
-  };
-
   // Handle viewing job details
   const handleViewJobDetails = (jobId) => {
     setSelectedJobId(jobId);
@@ -287,7 +281,6 @@ function App() {
               jobs={filteredJobs}
               onCancelJob={handleCancelJob}
               onDeleteJob={handleDeleteJob}
-              onClearHistory={handleClearHistory}
               onLoadMore={pagination.hasMore ? handleLoadMore : null}
               onViewDetails={handleViewJobDetails}
               loading={loading}

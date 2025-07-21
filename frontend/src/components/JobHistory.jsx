@@ -1,4 +1,4 @@
-const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onClearHistory, onLoadMore, onViewDetails, loading }) => {
+const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onLoadMore, onViewDetails, loading }) => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'completed':
@@ -35,14 +35,6 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onClearHistory, onLoadMore
         <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">Job History</h2>
-                {jobs.length > 0 && (
-                    <button
-                        onClick={onClearHistory}
-                        className="px-3 py-1 text-sm bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                        Clear History
-                    </button>
-                )}
             </div>
 
             {jobs.length === 0 ? (
@@ -55,7 +47,10 @@ const JobHistory = ({ jobs, onCancelJob, onDeleteJob, onClearHistory, onLoadMore
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-medium text-gray-800 text-sm">{job.id}</span>
+                                            <span className="font-medium text-gray-600 text-sm">
+                                                <span className="font-semibold text-black">Job Id: </span>
+                                                {job.id}
+                                            </span>
                                             <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(job.status)}`}>
                                                 {job.status}
                                             </span>
