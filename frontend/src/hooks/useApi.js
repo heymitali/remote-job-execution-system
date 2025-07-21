@@ -6,7 +6,7 @@ const useApi = () => {
   const [error, setError] = useState(null);
 
   // Execute command
-  const executeCommand = async ( command) => {
+  const executeCommand = async (command) => {
     setLoading(true);
     setError(null);
     try {

@@ -1,9 +1,9 @@
 // API service for remote job execution
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 class ApiService {
   // Execute a command
-  static async executeCommand(jobId, command) {
+  static async executeCommand(command) {
     try {
       const response = await fetch(`${API_BASE_URL}/commands/execute`, {
         method: 'POST',
@@ -11,7 +11,6 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          job_id: jobId,
           command: command,
         }),
       });
@@ -54,7 +53,7 @@ class ApiService {
   // Health check
   static async healthCheck() {
     try {
-      const response = await fetch('http://localhost:3000/health');
+      const response = await fetch(`http://localhost:3000/health`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -63,6 +62,77 @@ class ApiService {
       return await response.json();
     } catch (error) {
       console.error('Health check error:', error);
+      throw error;
+    }
+  }
+
+  // Get all jobs
+  static async getJobs(page = 1, limit = 10, status = null) {
+    try {
+      let url = `${API_BASE_URL}/commands/jobs?page=${page}&limit=${limit}`;
+      if (status) {
+        url += `&status=${status}`;
+      }
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get jobs error:', error);
+      throw error;
+    }
+  }
+
+  // Get single job
+  static async getJob(jobId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/commands/jobs/${jobId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get job error:', error);
+      throw error;
+    }
+  }
+
+  // Get job statistics
+  static async getJobStats() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/commands/jobs-stats`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get job stats error:', error);
+      throw error;
+    }
+  }
+
+  // Delete a job
+  static async deleteJob(jobId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/commands/jobs/${jobId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Delete job error:', error);
       throw error;
     }
   }
