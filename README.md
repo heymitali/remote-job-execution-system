@@ -2,6 +2,9 @@
 
 A full-stack web application for executing commands and scripts on remote servers. The system provides a modern React frontend for job management and a Node.js/Express backend for secure remote execution with database persistence.
 
+## Demo Video
+YouTube Link: https://youtu.be/CQrktZWmk4M
+
 ## Screenshot
 
 ![Homepage](frontend/docs/homepage.png)
